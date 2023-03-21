@@ -1,0 +1,35 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+// todo: скролл скрыть
+body {
+    color: #212121;
+}
+
+a,
+a:active {
+    text-decoration: none;
+    color: #212121;
+}
+
+button,
+button:active,
+button:hover {
+    box-sizing: border-box;
+    text-decoration: none;
+    border: none;
+    color: #212121;
+}
+
+input,
+input:active,
+input:hover,
+input:focus {
+    box-sizing: border-box;
+    text-decoration: none;
+    outline: none;
+    border: none;
+}
