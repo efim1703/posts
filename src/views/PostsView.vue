@@ -49,7 +49,7 @@
       <!-- Я бы лучше использовал виртуал скролл для такой цели или в крайнем случае 
         либу пагинатора, но в задании ничего не сказано про сторонние библиотеки, поэтому 
         решение написанное на коленках -->
-      <div class="paginator" v-if="!searchText">
+      <div class="paginator" v-if="!searchText || posts.length > POSTS_ON_PAGE">
         <custom-button 
           title="PREV"
           class="paginator__btn"
@@ -73,6 +73,7 @@ import CustomInput from '@/components/ui/CustomInput.vue'
 import CustomModal from '@/components/ui/CustomModal.vue'
 import CustomButton from '@/components/ui/CustomButton.vue'
 import postsRepository from '@/services/repositories/posts-repository.js'
+import Post from '@/services/classes/Post.js'
 import { mapActions } from 'vuex'
 
 export default {
@@ -110,7 +111,7 @@ export default {
 
       const firstIndex = (this.activePage - 1) * this.POSTS_ON_PAGE
       const lastIndex = firstIndex + this.POSTS_ON_PAGE
-      return this.posts.slice(firstIndex, lastIndex )
+      return this.posts.slice(firstIndex, lastIndex)
     },
     getLastPage() {
       return Math.ceil(this.posts.length / this.POSTS_ON_PAGE)
@@ -131,8 +132,7 @@ export default {
         //const response = await postsRepository.getPosts()
         let response = await fetch('/test.json')
         response = await response.json()
-        this.posts = response.posts;
-        this.initStore(response.posts)
+        this.setPosts(response.posts)
       } catch (error) {
         console.warn(error)
       }
@@ -173,6 +173,10 @@ export default {
       } catch (error) {
         console.warn(error)
       }
+    },
+    setPosts(responsePosts) {
+      this.posts = responsePosts.map(post => new Post(post))
+      this.initStore(this.posts)
     },
     savePost() {
       if (this.editPostModal.post.id === null) {
