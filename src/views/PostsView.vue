@@ -49,18 +49,20 @@
       <!-- Я бы лучше использовал виртуал скролл для такой цели или в крайнем случае 
         либу пагинатора, но в задании ничего не сказано про сторонние библиотеки, поэтому 
         решение написанное на коленках -->
+      <div class="paginator" v-if="!searchText">
         <custom-button 
           title="PREV"
-          class="paginator-btn"
+          class="paginator__btn"
           :disabled="activePage === 1"
           @click="activePage--"
         />
         <custom-button 
           title="NEXT" 
-          class="paginator-btn"
+          class="paginator__btn"
           :disabled="activePage === getLastPage"
           @click="activePage++"
         />
+      </div>
     </div>
   </div>
 </template>
@@ -71,6 +73,7 @@ import CustomInput from '@/components/ui/CustomInput.vue'
 import CustomModal from '@/components/ui/CustomModal.vue'
 import CustomButton from '@/components/ui/CustomButton.vue'
 import postsRepository from '@/services/repositories/posts-repository.js'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'PostsView',
@@ -113,17 +116,23 @@ export default {
       return Math.ceil(this.posts.length / this.POSTS_ON_PAGE)
     }
   },
+  watch: {
+    activePage() {
+      window.scrollTo({top: 0, behavior: "smooth"})
+    }
+  },
   async created() {
     await this.getPosts()
   },
   methods: {
+    ...mapActions(['initStore']),
     async getPosts() {
       try {
         //const response = await postsRepository.getPosts()
         let response = await fetch('/test.json')
         response = await response.json()
-
         this.posts = response.posts;
+        this.initStore(response.posts)
       } catch (error) {
         console.warn(error)
       }
@@ -247,9 +256,11 @@ export default {
       margin-left: 12px;
     }
 
-    .paginator-btn {
-      margin-right: 16px;
-
+    .paginator {
+      display: flex;
+      margin: 0 auto;
+      width: fit-content;
+      gap: 16px;
     }
   }
   

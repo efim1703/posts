@@ -49,7 +49,7 @@ export default {
 	}
 
 	&:disabled {
-		opacity: 0.4;
+		opacity: 0.15;
 	}
 }
 
